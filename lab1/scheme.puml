@@ -9,102 +9,113 @@ skinparam linetype ortho
 entity "User" {
   id: number <<PK>> <<generated>>
   --
-  manager_id: number <<PK>>
   name: string
   phone: string
   email: string
   password_hash: string
+  favourite_address: number <<FK>>
 }
 
-entity "Employee" {
+entity "UserAddress" {
   id: number <<PK>> <<generated>>
   --
+  user_id: number <<FK>> <<index>>
   name: string
-  phone: string
-  email: string
-  password_hash: string
-}
-
-entity "EmployeePermission" {
- manager_id: number <<PK>>
- permission_id: number <<PK>>
-}
-
-entity "Permission" {
-  id: number <<PK>> <<generated>>
-  type: string <<PK>>
+  zip_code: string
+  country: string
+  city: string
+  street: string
+  building: string
+  room: string
+  notes: string
 }
 
 entity "Order" {
   id: number <<PK>> <<generated>>
+  --
   user_id: number <<FK>>
+  address_id: number <<FK>>
   restaurant_id: number <<FK>>
-  address: string
-  zip_code: string
+  creation_date: datetime
+  total_price: 	decimal(19,4)
 }
 
 entity "OrderEntry" {
   id: number <<PK>> <<generated>>
+  --
   order_id: number <<FK>>
   meal_id: number <<FK>>
-  count: number
+  price: decimal(19,4)
 }
 
 entity "OrderStatus" {
   id: number <<PK>> <<generated>>
   name: string <<PK>>
+  --
 }
 
 entity "Restaurant" {
   id: number <<PK>> <<generated>>
-  ---
+  --
   name: string
   phone: string
-  address: string
-  zip_code: string
-  chef_name: string
+  country: string
+  city: string
+  street: string
+  building: string
   description: string
 }
 
 entity "RestaurantKitchenType" {
   restaurant_id: number <<PK>> <<FK>>
   kitchen_type_id: number <<PK>> <<FK>>
+  --
 }
 
 entity "KitchenType" {
   id: number <<PK>> <<generated>>
   name: string <<PK>>
+  --
 }
 
 entity "Menu" {
   id: number <<PK>> <<generated>>
-  name: string <<PK>>
+  --
+  name: string
+}
+
+entity "MenuMeal" {
+  menu_id: number <<PK>> <<FK>>
+  meal_id: number <<PK>> <<FK>>
+  --
+  price: decimal(19,4)
+  available: boolean
 }
 
 entity "Meal" {
-  id: number <<generated>>
+  id: number <<PK>> <<generated>>
+  --
   menu_id: number <<FK>>
   name: string
-  price: number
 }
 
 "User" ||--o{ "Order"
+"User" ||--o{ "UserAddress"
 
-"Order" }o..|| "OrderStatus"
+"Order" }o--|| "OrderStatus"
+"Order" }o--|| "UserAddress"
+
 "Order" }o--|| "Restaurant"
 "Order" ||--o{ "OrderEntry"
-"Order" }o--|| "Employee"
 
 "OrderEntry" ||--o{ "Meal"
+
+"KitchenType" ||--o{ "RestaurantKitchenType"
 
 "Restaurant" ||--o{ "RestaurantKitchenType"
 "Restaurant" ||--|{ "Menu"
 
-"KitchenType" ||--o{ "RestaurantKitchenType"
-
-"Menu" ||--o{ "Meal"
-
-"Employee" ||--|{ "EmployeePermission"
-"Permission" ||..|{ "EmployeePermission"
+"Menu" ||--|{ "MenuMeal"
+"MenuMeal" }|--|| "Meal"
 
 @enduml
