@@ -81,6 +81,7 @@ entity "KitchenType" {
 entity "Menu" {
   id: number <<PK>> <<generated>>
   --
+  restaurant_id: number <<FK>>
   name: string
 }
 
