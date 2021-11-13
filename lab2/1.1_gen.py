@@ -148,7 +148,7 @@ with open('csvs/3_restaurants.csv', 'w') as restaurants_file:
     print(restaurant, file=restaurants_file)
 
 with open('csvs/4_menus.csv', 'w') as menus_file:
-  print('id;name;description', file=menus_file)
+  print('id;restaurant_id;name;description', file=menus_file)
   for menu in menus:
     print(menu, file=menus_file)
 
